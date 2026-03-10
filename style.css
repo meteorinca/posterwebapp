@@ -14,7 +14,8 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    overflow: hidden; /* Prevent body vertical scrolling */
+    overflow: hidden;
+    /* Prevent body vertical scrolling */
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -37,13 +38,14 @@ header {
 nav a {
     color: #a0a0a0;
     text-decoration: none;
-    margin: 0 25px;
+    margin: 0 15px;
     font-size: 16px;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
-nav a:hover, nav a.active {
+nav a:hover,
+nav a.active {
     color: #ffffff;
 }
 
@@ -88,7 +90,7 @@ main {
     align-items: center;
     position: relative;
     /* subtle vertical grid lines effect simulating cinema environment */
-    background-image: repeating-linear-gradient(90deg, transparent, transparent 9vw, rgba(255,255,255,0.02) 10vw);
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 9vw, rgba(255, 255, 255, 0.02) 10vw);
 }
 
 .carousel-container {
@@ -96,12 +98,15 @@ main {
     align-items: center;
     height: 100%;
     width: 100%;
-    padding: 0 50vw; /* Allows posters to reach center starting from very edges */
+    padding: 0 50vw;
+    /* Allows posters to reach center starting from very edges */
     gap: 50px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
     cursor: grab;
 }
 
@@ -122,10 +127,11 @@ main {
     overflow: hidden;
     transform: scale(0.8);
     opacity: 0.5;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     /* Set unselected items a fixed dimension */
     height: 60vh;
     max-height: 500px;
+    -webkit-box-reflect: below 5px linear-gradient(to bottom, transparent, transparent 65%, rgba(255, 255, 255, 0.4));
 }
 
 /* The active (centered) poster */
@@ -133,7 +139,7 @@ main {
     transform: scale(1.1);
     opacity: 1;
     z-index: 5;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
 }
 
 .poster-item img {
@@ -142,14 +148,18 @@ main {
     object-fit: cover;
     display: block;
     border-radius: 12px;
-    pointer-events: none; /* Helps with mouse dragging */
+    pointer-events: none;
+    /* Helps with mouse dragging */
 }
 
 /* Custom dark hover overlay */
 .poster-overlay {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -168,7 +178,7 @@ main {
     font-weight: 700;
     text-align: center;
     text-transform: capitalize;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
     transform: translateY(20px);
     transition: transform 0.3s ease;
 }
@@ -181,12 +191,15 @@ main {
     header {
         padding: 20px;
     }
+
     nav {
         display: none;
     }
+
     .poster-item {
         height: 50vh;
     }
+
     .poster-title {
         font-size: 20px;
     }

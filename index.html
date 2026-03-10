@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CINEMANIA</title>
+    <title>MojMedia</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_popcorn/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_popcorn/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_popcorn/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicon_popcorn/site.webmanifest">
+    <link rel="shortcut icon" href="assets/favicon_popcorn/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
-        <div class="logo">CINEMANIA</div>
-        <nav>
-            <a href="#" class="active">Home</a>
-            <a href="#">Catalogue</a>
-            <a href="#">Shop</a>
-            <a href="#">Sports</a>
-            <a href="#">TV channels</a>
+        <div class="logo">MojMedia</div>
+        <nav id="filter-nav">
+            <a href="#" class="active" data-filter="All">All</a>
+            <a href="#" data-filter="Movies">Movies</a>
+            <a href="#" data-filter="TVShows">TVShows</a>
+            <a href="#" data-filter="Music">Music</a>
+            <a href="#" data-filter="Books">Books</a>
+            <a href="#" data-filter="Articles">Articles</a>
+            <a href="#" data-filter="WebSites">WebSites</a>
+            <a href="#" data-filter="EveryTing">EveryTing</a>
         </nav>
         <div class="user-actions">
-            <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -36,4 +47,5 @@
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

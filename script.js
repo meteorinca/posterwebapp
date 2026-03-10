@@ -1,20 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('carousel');
+    const navLinks = document.querySelectorAll('#filter-nav a');
 
-    // Dynamically build the gallery from POSTERS array
-    POSTERS.forEach(filename => {
-        // Extract title: remove extensions
-        let title = filename.replace(/\.(png|jpe?g)$/i, '');
-        // Optional: Replace hyphens/underscores with spaces
-        // title = title.replace(/[-_]/g, ' ');
+    // Initialize container events (drag/wheel)
+    initEvents(container);
 
-        const item = document.createElement('div');
-        item.className = 'poster-item';
+    // Initial render
+    renderGallery(container, 'All');
+
+    // Filter click events
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            const filter = link.getAttribute('data-filter') || 'All';
+            renderGallery(container, filter);
+        });
+    });
+});
+
+function renderGallery(container, filter) {
+    container.innerHTML = ''; // Clear current gallery
+
+    let filteredPosters = POSTERS.filter(item => {
+        const type = typeof item === 'string' ? 'Movies' : (item.type || 'Movies');
+        if (filter === 'EveryTing') return true;
+        if (filter === 'All') return type === 'Movies' || type === 'TVShows';
+        return type === filter;
+    });
+
+    filteredPosters.forEach(item => {
+        let filename = typeof item === 'string' ? item : item.poster;
+        let title = filename.replace(/\.(png|jpe?g|gif|webp)$/i, '');
+
+        const div = document.createElement('div');
+        div.className = 'poster-item';
 
         const img = document.createElement('img');
         img.src = `assets/Posters/${filename}`;
         img.alt = title;
-        // Prevent default drag behaviors to make custom mouse scrolling work properly
         img.draggable = false;
 
         const overlay = document.createElement('div');
@@ -25,49 +51,66 @@ document.addEventListener('DOMContentLoaded', () => {
         titleEl.textContent = title;
 
         overlay.appendChild(titleEl);
-        item.appendChild(img);
-        item.appendChild(overlay);
+        div.appendChild(img);
+        div.appendChild(overlay);
 
-        container.appendChild(item);
+        container.appendChild(div);
     });
 
-    setupCarousel(container);
-});
+    // Reset container scroll
+    container.scrollTo({ left: 0, behavior: 'instant' });
 
-function setupCarousel(container) {
-    const items = document.querySelectorAll('.poster-item');
+    // Initial state setup and center first item
+    requestAnimationFrame(() => {
+        checkActiveItem(container);
+
+        setTimeout(() => {
+            const items = container.querySelectorAll('.poster-item');
+            if (items.length > 0) {
+                const firstItem = items[0];
+                const containerCenter = container.getBoundingClientRect().width / 2;
+                const itemCenter = firstItem.offsetWidth / 2;
+                container.scrollTo({
+                    left: firstItem.offsetLeft - containerCenter + itemCenter,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    });
+}
+
+function checkActiveItem(container) {
+    const items = container.querySelectorAll('.poster-item');
     if (items.length === 0) return;
 
-    // Handle Active state
-    const checkActiveItem = () => {
-        const containerCenter = container.getBoundingClientRect().width / 2;
-        let closestItem = null;
-        let minDistance = Infinity;
+    const containerCenter = container.getBoundingClientRect().width / 2;
+    let closestItem = null;
+    let minDistance = Infinity;
 
-        items.forEach(item => {
-            const rect = item.getBoundingClientRect();
-            // Need the center of the item relative to viewport
-            const itemCenter = rect.left + rect.width / 2;
-            const distance = Math.abs(containerCenter - itemCenter);
+    items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const itemCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(containerCenter - itemCenter);
 
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestItem = item;
-            }
-        });
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestItem = item;
+        }
+    });
 
-        items.forEach(item => {
-            if (item === closestItem) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
-    };
+    items.forEach(item => {
+        if (item === closestItem) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
 
+function initEvents(container) {
     // Scroll snapping and centering update logic
     container.addEventListener('scroll', () => {
-        requestAnimationFrame(checkActiveItem);
+        requestAnimationFrame(() => checkActiveItem(container));
     });
 
     // Mouse drag swiping functionality
@@ -79,7 +122,6 @@ function setupCarousel(container) {
         isDown = true;
         startX = e.pageX - container.offsetLeft;
         scrollLeft = container.scrollLeft;
-        // Temporarily disable scroll snap to allow smooth dragging
         container.style.scrollSnapType = 'none';
     });
 
@@ -92,10 +134,8 @@ function setupCarousel(container) {
     container.addEventListener('mouseup', () => {
         if (!isDown) return;
         isDown = false;
-        // Re-enable scroll snap which causes it to securely snap perfectly to a poster
         container.style.scrollSnapType = 'x mandatory';
 
-        // Minor trick to trigger snap layout algorithm again after setting style
         container.scrollBy({ left: 1, behavior: 'auto' });
         container.scrollBy({ left: -1, behavior: 'auto' });
     });
@@ -104,7 +144,7 @@ function setupCarousel(container) {
         if (!isDown) return;
         e.preventDefault();
         const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX) * 2; // scroll speed multiplier
+        const walk = (x - startX) * 2;
         container.scrollLeft = scrollLeft - walk;
     });
 
@@ -112,28 +152,10 @@ function setupCarousel(container) {
     container.addEventListener('wheel', (e) => {
         if (e.deltaY !== 0) {
             e.preventDefault();
-            // Move horizontally map deltaY directly to scrollLeft
-            // Smooth natural behavior natively managed by browser physics
             container.scrollBy({
                 left: e.deltaY * 3,
                 behavior: 'smooth'
             });
         }
     }, { passive: false });
-
-
-    // Initial state setup
-    checkActiveItem();
-
-    // Position scrolling so the first item naturally falls to the center initially
-    setTimeout(() => {
-        // Find padding values and calculate proper first align
-        const firstItem = items[0];
-        const containerCenter = container.getBoundingClientRect().width / 2;
-        const itemCenter = firstItem.offsetWidth / 2;
-        container.scrollTo({
-            left: firstItem.offsetLeft - containerCenter + itemCenter,
-            behavior: 'smooth'
-        });
-    }, 100);
 }
