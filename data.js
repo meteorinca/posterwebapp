@@ -4,6 +4,6 @@ const POSTERS = [
     "Back to the Future Part I.jpeg",
     "Back to the Future Part II.jpeg",
     "Back to the Future Part III.jpeg",
-    "Curb Your Enthusiasm (2000).jpg",
+    { poster: "Curb Your Enthusiasm (2000).jpg", type: "TVShows" },
     "Inception.jpg"
 ];
