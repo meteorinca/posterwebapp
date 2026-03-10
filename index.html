@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CINEMANIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">CINEMANIA</div>
+        <nav>
+            <a href="#" class="active">Home</a>
+            <a href="#">Catalogue</a>
+            <a href="#">Shop</a>
+            <a href="#">Sports</a>
+            <a href="#">TV channels</a>
+        </nav>
+        <div class="user-actions">
+            <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <div class="profile-icon"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="carousel-container" id="carousel">
+            <!-- Posters will be generated here by script.js -->
+        </div>
+    </main>
+
+    <!-- Loads POSTERS array -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
