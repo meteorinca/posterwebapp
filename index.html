@@ -28,11 +28,23 @@
             <a href="#" data-filter="EveryTing">EveryTing</a>
         </nav>
         <div class="user-actions">
+            <!-- Search input hidden by default -->
+            <input type="text" id="search-input" placeholder="Search..." style="display: none; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid #a0a0a0; border-radius: 20px; padding: 6px 15px; margin-right: 15px; outline: none;">
             <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 15px;">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
+            
+            <!-- Rating checkmark -->
+            <label class="rating-toggle" title="Toggle Ratings">
+                <input type="checkbox" id="show-ratings-checkbox">
+                <svg id="rating-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 20px;">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </label>
+
             <div class="profile-icon"></div>
         </div>
     </header>

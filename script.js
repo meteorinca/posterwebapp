@@ -1,6 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('carousel');
     const navLinks = document.querySelectorAll('#filter-nav a');
+    const nav = document.getElementById('filter-nav');
+    const logo = document.querySelector('.logo');
+    
+    // Search elements
+    const searchIcon = document.querySelector('.search-icon');
+    const searchInput = document.getElementById('search-input');
+    
+    // Ratings elements
+    const ratingCheck = document.getElementById('show-ratings-checkbox');
+    const ratingCheckIcon = document.getElementById('rating-check-icon');
 
     // Initialize container events (drag/wheel)
     initEvents(container);
@@ -16,32 +26,130 @@ document.addEventListener('DOMContentLoaded', () => {
             link.classList.add('active');
 
             const filter = link.getAttribute('data-filter') || 'All';
-            renderGallery(container, filter);
+            renderGallery(container, filter, searchInput.value);
+            
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+                nav.classList.remove('show-mobile');
+            }
         });
+    });
+
+    // Mobile menu toggle
+    logo.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            nav.classList.toggle('show-mobile');
+        }
+    });
+
+    // Search functionality
+    searchIcon.addEventListener('click', () => {
+        if (searchInput.style.display === 'none') {
+            searchInput.style.display = 'block';
+            searchInput.focus();
+        } else {
+            searchInput.style.display = 'none';
+            if (searchInput.value !== '') {
+                searchInput.value = '';
+                const activeLink = document.querySelector('#filter-nav a.active');
+                const filter = activeLink ? activeLink.getAttribute('data-filter') : 'All';
+                renderGallery(container, filter, '');
+            }
+        }
+    });
+
+    searchInput.addEventListener('input', () => {
+        const activeLink = document.querySelector('#filter-nav a.active');
+        const filter = activeLink ? activeLink.getAttribute('data-filter') : 'All';
+        renderGallery(container, filter, searchInput.value);
+    });
+
+    // Ratings toggle functionality
+    ratingCheck.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            document.body.classList.add('show-ratings');
+            ratingCheckIcon.setAttribute('stroke', '#ffffff');
+        } else {
+            document.body.classList.remove('show-ratings');
+            ratingCheckIcon.setAttribute('stroke', '#a0a0a0');
+        }
     });
 });
 
-function renderGallery(container, filter) {
+function getDefaultImage(type, title) {
+    let icon = '';
+    let bgColor = '#333';
+    switch(type) {
+        case 'Movies': icon = '🎬'; bgColor = '#2c3e50'; break;
+        case 'TVShows': icon = '📺'; bgColor = '#8e44ad'; break;
+        case 'Books': icon = '📚'; bgColor = '#d35400'; break;
+        case 'Articles': icon = '📝'; bgColor = '#16a085'; break;
+        case 'Music': icon = '🎵'; bgColor = '#2980b9'; break;
+        default: icon = '🖼️'; bgColor = '#34495e'; break;
+    }
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+        <rect width="100%" height="100%" fill="${bgColor}"/>
+        <text x="50%" y="40%" font-size="80" text-anchor="middle" dominant-baseline="middle">${icon}</text>
+        <text x="50%" y="60%" font-size="28" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="middle">${title.substring(0, 20)}</text>
+    </svg>`;
+    return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+}
+
+function renderGallery(container, filter, query = '') {
     container.innerHTML = ''; // Clear current gallery
 
     let filteredPosters = POSTERS.filter(item => {
         const type = typeof item === 'string' ? 'Movies' : (item.type || 'Movies');
-        if (filter === 'EveryTing') return true;
-        if (filter === 'All') return type === 'Movies' || type === 'TVShows';
-        return type === filter;
+        let filename = typeof item === 'string' ? item : (item.poster || '');
+        let title = (item.title || filename.replace(/\.(png|jpe?g|gif|webp)$/i, ''));
+        
+        let matchFilter = false;
+        if (filter === 'EveryTing') matchFilter = true;
+        else if (filter === 'All') matchFilter = (type === 'Movies' || type === 'TVShows');
+        else matchFilter = (type === filter);
+
+        if (!matchFilter) return false;
+
+        if (query) {
+            return title.toLowerCase().includes(query.toLowerCase());
+        }
+        return true;
     });
 
     filteredPosters.forEach(item => {
-        let filename = typeof item === 'string' ? item : item.poster;
-        let title = filename.replace(/\.(png|jpe?g|gif|webp)$/i, '');
+        let title = '';
+        let imgSrc = '';
+        let rating = null;
+
+        if (typeof item === 'string') {
+            title = item.replace(/\.(png|jpe?g|gif|webp)$/i, '');
+            imgSrc = `assets/Posters/${item}`;
+        } else {
+            title = item.title || (item.poster ? item.poster.replace(/\.(png|jpe?g|gif|webp)$/i, '') : 'Untitled');
+            const itemType = item.type || 'Movies';
+            if (item.poster) {
+                imgSrc = `assets/Posters/${item.poster}`;
+            } else {
+                imgSrc = getDefaultImage(itemType, title);
+            }
+            rating = item.rating || null;
+        }
 
         const div = document.createElement('div');
         div.className = 'poster-item';
 
         const img = document.createElement('img');
-        img.src = `assets/Posters/${filename}`;
+        img.src = imgSrc;
         img.alt = title;
         img.draggable = false;
+
+        // Rating element
+        if (rating) {
+            const ratingEl = document.createElement('div');
+            ratingEl.className = 'poster-rating';
+            ratingEl.innerHTML = `★ ${rating}`;
+            div.appendChild(ratingEl);
+        }
 
         const overlay = document.createElement('div');
         overlay.className = 'poster-overlay';
