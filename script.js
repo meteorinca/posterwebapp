@@ -76,23 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function getDefaultImage(type, title) {
-    let icon = '';
-    let bgColor = '#333';
-    switch(type) {
-        case 'Movies': icon = '🎬'; bgColor = '#2c3e50'; break;
-        case 'TVShows': icon = '📺'; bgColor = '#8e44ad'; break;
-        case 'Books': icon = '📚'; bgColor = '#d35400'; break;
-        case 'Articles': icon = '📝'; bgColor = '#16a085'; break;
-        case 'Music': icon = '🎵'; bgColor = '#2980b9'; break;
-        default: icon = '🖼️'; bgColor = '#34495e'; break;
-    }
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
-        <rect width="100%" height="100%" fill="${bgColor}"/>
-        <text x="50%" y="40%" font-size="80" text-anchor="middle" dominant-baseline="middle">${icon}</text>
-        <text x="50%" y="60%" font-size="28" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="middle">${title.substring(0, 20)}</text>
-    </svg>`;
-    return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+function getFallbackImage(type) {
+    const fallbackMap = {
+        'Movies': 'NoMovie.png',
+        'TVShows': 'NoTVShow.png',
+        'Books': 'NoBook.png',
+        'Articles': 'NoArticle.png',
+        'Music': 'NoMusic.png',
+        'WebSites': 'NoWebSite.png'
+    };
+    return `assets/Posters/${fallbackMap[type] || 'NoMovie.png'}`;
 }
 
 function renderGallery(container, filter, query = '') {
@@ -130,7 +123,7 @@ function renderGallery(container, filter, query = '') {
             if (item.poster) {
                 imgSrc = `assets/Posters/${item.poster}`;
             } else {
-                imgSrc = getDefaultImage(itemType, title);
+                imgSrc = getFallbackImage(itemType);
             }
             rating = item.rating || null;
         }
